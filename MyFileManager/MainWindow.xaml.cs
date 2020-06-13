@@ -52,7 +52,7 @@ namespace MyFileManager
                 if (result.ToString() == "OK")
                 {
                     filePath = folderDialog.SelectedPath;
-                    infoL.Content = "Папка выбрана";
+                    infoL.Content = "Каталог выбрана";
                 }
             }
             fileName = System.IO.Path.GetFileName(filePath);
@@ -63,7 +63,7 @@ namespace MyFileManager
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                infoL.Content = "Выберите папку или файл";
+                infoL.Content = "Выберите каталог или файл";
                 return;
             }
             infoL.Content = "Куда хотите переместить?";
@@ -77,6 +77,7 @@ namespace MyFileManager
             try
             {
                 Directory.Move(filePath, $"{destFilePath}\\{fileName}");
+                infoL.Content = "Успешно перемещен";
             }
             catch (Exception ex)
             {
@@ -90,7 +91,7 @@ namespace MyFileManager
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                infoL.Content = "Выберите папку или файл";
+                infoL.Content = "Выберите каталог или файл";
                 return;
             }
             infoL.Content = "Куда хотите копировать?";
@@ -106,12 +107,12 @@ namespace MyFileManager
                 if (isFile)
                 {
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(filePath, $"{destFilePath}\\{fileName}");
-
                 }
                 else
                 {
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(filePath, $"{destFilePath}\\{fileName}");
                 }
+                infoL.Content = "Успешно cкопирован";
             }
             catch (Exception ex)
             {
@@ -120,9 +121,26 @@ namespace MyFileManager
             }
         }
 
-        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        private void DeleteBtnClick(object sender, RoutedEventArgs e)
         {
-
+            if (string.IsNullOrEmpty(filePath))
+            {
+                infoL.Content = "Выберите каталог или файл";
+                return;
+            }
+            try
+            {
+                if (isFile)
+                    File.Delete(filePath);
+                else
+                    Directory.Delete(filePath, true);
+                infoL.Content = (isFile ? "Файл" : "Каталог") + " удален";
+            }
+            catch (Exception ex)
+            {
+                infoL.Content = "Произошла ошибка!";
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
